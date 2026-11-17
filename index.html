@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff7fa">
-  <meta name="description" content="Controle financeiro das suas publis, campanhas e pagamentos.">
+  <meta name="description" content="Organize seu financeiro, permutas, eventos, reuniões e afiliações como creator.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Meu Publis">
@@ -12,7 +12,7 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <title>Meu Publis — Controle financeiro</title>
+  <title>Meu Publis — Painel da Creator</title>
 </head>
 <body>
   <div class="app-shell">
@@ -51,6 +51,12 @@
         </div>
       </section>
 
+      <nav class="main-tabs" aria-label="Áreas do Meu Publis">
+        <button class="main-tab active" id="financeTab" type="button" aria-current="page">♡ Financeiro</button>
+        <button class="main-tab" id="creatorTab" type="button">✦ Minha rotina creator</button>
+      </nav>
+
+      <div id="financePage">
       <section class="stats-grid" aria-label="Resumo financeiro geral">
         <article class="stat-card stat-pink">
           <div class="stat-head"><span class="stat-icon"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3zM3 7l2-3h14l2 3M16 13h5"/><circle cx="16" cy="13" r="1"/></svg></span><span class="stat-label">Total contratado</span></div>
@@ -111,9 +117,44 @@
         <div id="campaignList" class="campaign-list" aria-live="polite"></div>
       </section>
 
+      </div>
+
+      <section id="creatorPage" class="creator-page" hidden>
+        <div class="creator-intro">
+          <div><p class="eyebrow">ALÉM DAS PUBLI</p><h3>Sua rotina de creator</h3><p>Cuide das parcerias, experiências, compromissos e oportunidades em um só lugar.</p></div>
+          <div class="creator-intro-art" aria-hidden="true">✿</div>
+        </div>
+        <div class="creator-summary-grid">
+          <article class="creator-summary-card"><span class="summary-emoji">🎁</span><span><small>Permutas</small><strong id="permutaCount">0</strong></span></article>
+          <article class="creator-summary-card"><span class="summary-emoji">📍</span><span><small>Eventos</small><strong id="eventCount">0</strong></span></article>
+          <article class="creator-summary-card"><span class="summary-emoji">☕</span><span><small>Reuniões</small><strong id="meetingCount">0</strong></span></article>
+          <article class="creator-summary-card"><span class="summary-emoji">🔗</span><span><small>Afiliações</small><strong id="affiliateCount">0</strong></span></article>
+        </div>
+        <div class="section-title-row creator-list-heading">
+          <div><p class="eyebrow">PARCERIAS E COMPROMISSOS</p><h3>Meu espaço creator <span id="creatorCount" class="count-pill">0</span></h3></div>
+          <button class="primary-button" id="newCreatorItemButton" type="button"><span class="plus">＋</span> Novo registro</button>
+        </div>
+        <div class="creator-filter-bar" role="group" aria-label="Filtrar por categoria">
+          <button type="button" class="category-chip active" data-type-filter="all">Tudo</button>
+          <button type="button" class="category-chip" data-type-filter="permuta">🎁 Permutas</button>
+          <button type="button" class="category-chip" data-type-filter="evento">📍 Eventos</button>
+          <button type="button" class="category-chip" data-type-filter="reuniao">☕ Reuniões</button>
+          <button type="button" class="category-chip" data-type-filter="afiliacao">🔗 Afiliações</button>
+        </div>
+        <div class="filters-card creator-filters-card">
+          <label class="filter-field"><span>Mês</span><select id="creatorMonthFilter" aria-label="Filtrar rotina por mês">
+            <option value="all">Todos os meses</option>
+            <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+          </select></label>
+          <label class="filter-field"><span>Ano</span><select id="creatorYearFilter" aria-label="Filtrar rotina por ano"><option value="all">Todos os anos</option></select></label>
+          <label class="search-field"><span class="sr-only">Buscar registro creator</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="creatorSearchInput" type="search" placeholder="Buscar marca ou compromisso..." autocomplete="off"></label>
+        </div>
+        <div id="creatorItemList" class="creator-item-list" aria-live="polite"></div>
+      </section>
+
       <section class="backup-note">
         <div class="backup-icon"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg></div>
-        <div><strong>Seus registros ficam salvos neste aparelho</strong><p>Faça um backup de tempos em tempos para ter uma cópia segura em Arquivos/iCloud ou outro local.</p></div>
+        <div><strong>Todos os seus registros ficam salvos neste aparelho</strong><p>Faça um backup de tempos em tempos para ter uma cópia segura em Arquivos/iCloud ou outro local.</p></div>
         <button id="backupNoteButton" class="text-button">Fazer backup</button>
       </section>
     </main>
@@ -140,6 +181,41 @@
           <label class="status-option"><input type="radio" name="paymentStatus" value="received"><span class="status-radio"></span><span><b>Recebido</b><small>Pagamento confirmado</small></span></label>
         </fieldset>
         <div class="modal-actions"><button type="button" class="secondary-button" id="cancelModalButton">Cancelar</button><button type="submit" class="primary-button">Salvar publi</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="creatorItemModal" hidden>
+    <section class="modal-card creator-modal-card" role="dialog" aria-modal="true" aria-labelledby="creatorModalTitle">
+      <div class="modal-header"><div><p class="eyebrow">SUA ROTINA DE CREATOR</p><h2 id="creatorModalTitle">Novo registro</h2></div><button class="close-button" id="closeCreatorModalButton" aria-label="Fechar">×</button></div>
+      <form id="creatorItemForm">
+        <input id="creatorItemId" type="hidden">
+        <label class="form-field"><span>Categoria <b>*</b></span><select id="creatorTypeInput" required><option value="permuta">🎁 Permuta</option><option value="evento">📍 Evento presencial</option><option value="reuniao">☕ Reunião</option><option value="afiliacao">🔗 Afiliação</option></select></label>
+        <label class="form-field"><span id="creatorTitleLabel">Marca parceira <b>*</b></span><input id="creatorTitleInput" type="text" maxlength="100" placeholder="Ex.: Marca parceira" required></label>
+        <div class="form-row">
+          <label class="form-field"><span id="creatorDateLabel">Data <b>*</b></span><input id="creatorDateInput" type="date" required></label>
+          <label class="form-field"><span>Status</span><select id="creatorStatusInput"></select></label>
+        </div>
+        <div id="permutaFields" class="creator-dynamic-fields">
+          <label class="form-field"><span>Produto ou serviço recebido</span><input id="exchangeItemInput" type="text" maxlength="120" placeholder="Ex.: Kit de skincare"></label>
+          <div class="form-row">
+            <label class="form-field"><span>Valor estimado (R$)</span><input id="exchangeValueInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+            <label class="form-field"><span>Entrega combinada</span><input id="exchangeDeliveryInput" type="text" maxlength="100" placeholder="Ex.: 1 Reels + Stories"></label>
+          </div>
+        </div>
+        <div id="eventFields" class="creator-dynamic-fields" hidden>
+          <div class="form-row"><label class="form-field"><span>Horário</span><input id="eventTimeInput" type="time"></label><label class="form-field"><span>Local</span><input id="eventPlaceInput" type="text" maxlength="140" placeholder="Endereço ou espaço"></label></div>
+        </div>
+        <div id="meetingFields" class="creator-dynamic-fields" hidden>
+          <div class="form-row"><label class="form-field"><span>Horário</span><input id="meetingTimeInput" type="time"></label><label class="form-field"><span>Link ou local</span><input id="meetingPlaceInput" type="text" maxlength="180" placeholder="Link da reunião ou endereço"></label></div>
+        </div>
+        <div id="affiliateFields" class="creator-dynamic-fields" hidden>
+          <div class="form-row"><label class="form-field"><span>Cupom</span><input id="affiliateCouponInput" type="text" maxlength="60" placeholder="Ex.: LETICIA10"></label><label class="form-field"><span>Comissão (%)</span><input id="affiliateRateInput" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="Ex.: 10"></label></div>
+          <label class="form-field"><span>Link de afiliada</span><input id="affiliateLinkInput" type="url" maxlength="500" placeholder="https://..."></label>
+          <label class="form-field"><span>Vigência até <small>(opcional)</small></span><input id="affiliateEndDateInput" type="date"></label>
+        </div>
+        <label class="form-field"><span>Observações <small>(opcional)</small></span><textarea id="creatorDetailsInput" rows="3" maxlength="500" placeholder="Anote detalhes, contatos, combinados ou próximos passos..."></textarea></label>
+        <div class="modal-actions"><button type="button" class="secondary-button" id="cancelCreatorModalButton">Cancelar</button><button type="submit" class="primary-button">Salvar registro</button></div>
       </form>
     </section>
   </div>
