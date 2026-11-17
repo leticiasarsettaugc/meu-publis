@@ -276,8 +276,6 @@
     if (!filtered.length) {
       const anyRecords = records.length > 0;
       list.innerHTML = `<div class="empty-state"><div class="empty-emoji">${anyRecords ? '🔎' : '🌷'}</div><strong>${anyRecords ? 'Nenhum registro neste filtro' : 'Seu espaço creator começa aqui'}</strong><p>${anyRecords ? 'Troque a categoria, o mês, o ano ou a busca.' : 'Cadastre permutas, convites, reuniões e programas de afiliados para não perder nenhum combinado.'}</p>${anyRecords ? '' : '<button class="primary-button" id="emptyCreatorButton">＋ Adicionar primeiro registro</button>'}</div>`;
-      const emptyButton = $('emptyCreatorButton');
-      if (emptyButton) emptyButton.addEventListener('click', () => openCreatorForm());
       return;
     }
     list.innerHTML = filtered.map(item => {
@@ -347,6 +345,12 @@
     try { await removeCreatorItem(id); await refreshCreatorItems(); showToast('Registro excluído.'); }
     catch (error) { console.error(error); showToast('Não foi possível excluir o registro.'); }
   }
+  document.addEventListener('click', event => {
+    const trigger = event.target instanceof Element ? event.target.closest('#newCreatorItemButton, #emptyCreatorButton') : null;
+    if (!trigger) return;
+    event.preventDefault();
+    openCreatorForm();
+  });
   $('creatorTypeInput').addEventListener('change', () => updateCreatorFormFields($('creatorTypeInput').value));
   $('creatorItemForm').addEventListener('submit', async event => {
     event.preventDefault();
@@ -388,7 +392,6 @@
       renderCreatorItems(updated); showToast(existingId ? 'Registro atualizado!' : 'Registro cadastrado!');
     } catch (error) { console.error(error); showToast('Falha ao salvar o registro. Faça um backup e tente novamente.'); }
   });
-  $('newCreatorItemButton').addEventListener('click', () => openCreatorForm());
   $('closeCreatorModalButton').addEventListener('click', closeCreatorForm);
   $('cancelCreatorModalButton').addEventListener('click', closeCreatorForm);
   $('creatorItemModal').addEventListener('click', event => { if (event.target === $('creatorItemModal')) closeCreatorForm(); });
@@ -503,7 +506,7 @@
     $('creatorMonthFilter').value = String(now.getMonth()); $('creatorYearFilter').value = String(now.getFullYear());
     render(initialRecords); renderCreatorItems(initialCreatorItems);
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-      navigator.serviceWorker.register('./service-worker.js').catch(error => console.warn('Service Worker não registrado:', error));
+      navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' }).then(registration => registration.update()).catch(error => console.warn('Service Worker não registrado:', error));
     }
   }
   init();
